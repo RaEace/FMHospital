@@ -58,7 +58,31 @@ public class EmergencyCareService {
   public void PatientIsInRoom(Patient patient) throws InterruptedException {
     if(patientsPaperInWR.contains(patient)) {
       System.out.println("(" + this.serviceName + ") | " + patient + " waiting to join a room");
-      while(!this.semRooms.tryAcquire()) {
+      while (!this.semRooms.tryAcquire()) {
+        Thread askForARoomToProvider = new Thread(() -> {
+          try {
+            if(provider.givingARoom()) {
+              semRooms.release();
+              System.out.println("(Provider) | send a room to service : " + serviceName);
+            }
+            else System.out.println("(Provider) | error : no room available");
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        });
+        askForARoomToProvider.start();
+        Thread.sleep(1000);
+      }
+      this.patientsPaperInWR.remove(patient);
+      this.patientsInRoom.add(patient);
+      this.semNurses.release();
+    }
+  }
+
+  public void PhysicianIsExaminatingPatient(Patient patient) throws InterruptedException {
+    if(patientsInRoom.contains(patient)) {
+      System.out.println("(" + this.serviceName + ") | " + patient + " waiting for a physician");
+      while (!this.semPhysician.tryAcquire()) {
         Thread askForAPhysicianToProvider = new Thread(() -> {
           try {
             if(provider.givingAPhysician()) {
@@ -73,16 +97,10 @@ public class EmergencyCareService {
         askForAPhysicianToProvider.start();
         Thread.sleep(1000);
       }
-      this.patientsPaperInWR.remove(patient);
-      this.patientsInRoom.add(patient);
-      System.out.println("(" + this.serviceName + ") | A nurse is here for " + patient + " papers");
-      this.semNurses.release();
-    }
-  }
-
-  public void PhysicianIsExaminatingPatient(Patient patient) {
-    if(patientsInRoom.contains(patients)) {
-
+      System.out.println("(" + this.serviceName + ") | " + patient + " is examinating by a physician");
+      Thread.sleep(3000);
+      patient.setCured();
+      this.semPhysician.release();
     }
   }
 

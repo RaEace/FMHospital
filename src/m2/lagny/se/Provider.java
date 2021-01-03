@@ -20,14 +20,12 @@ public class Provider {
     this.semLock.release();
   }
 
-  public boolean givingARoom(String service) throws InterruptedException {
+  public boolean givingARoom() throws InterruptedException {
     this.semLock.acquire();
     if(semRooms.tryAcquire()) {
-      System.out.println("(Provider) | send a room to service : " + service);
       semLock.release();
       return true;
     } else {
-      System.out.println("(Provider) | error : no room available");
       semLock.release();
       return false;
     }
