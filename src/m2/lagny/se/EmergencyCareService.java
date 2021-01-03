@@ -56,8 +56,21 @@ public class EmergencyCareService {
   }
 
   // need provider
-  public void PatientIsInRoom() {
-
+  public void PatientIsInRoom(Patient patient) {
+    if(patientsPaperInWR.contains(patient)) {
+      System.out.println("(" + this.serviceName + ") | " + patient + " waiting to join a room");
+      while(!this.semRooms.tryAcquire()) {
+        Thread askForAPhysicianToProvider = new Thread(() -> {
+          try {
+            if(provider.givingAPhysician(serviceName)) {
+              semPhysician.release();
+            }
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        });
+      }
+    }
   }
 
   public void PhysicianIsExaminatingPatient() {

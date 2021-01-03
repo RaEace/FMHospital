@@ -13,14 +13,14 @@ public class Provider {
     this.semLock = new Semaphore(1);
   }
 
-  public void gettingARoom(String service) throws InterruptedException {
+  public void getARoom(String service) throws InterruptedException {
     this.semLock.acquire();
     this.semRooms.release();
     System.out.println("(Provider) | get a room from service : " + service);
     this.semLock.release();
   }
 
-  public void sendARoom(String service) throws InterruptedException {
+  public void givingARoom(String service) throws InterruptedException {
     this.semLock.acquire();
     if(semRooms.tryAcquire()) {
       System.out.println("(Provider) | send a room to service : " + service);
@@ -38,14 +38,16 @@ public class Provider {
     this.semLock.release();
   }
 
-  public void givingAPhysician(String service) throws InterruptedException {
+  public boolean givingAPhysician(String service) throws InterruptedException {
     this.semLock.acquire();
     if(semRooms.tryAcquire()) {
       System.out.println("(Provider) | send a physician to service : " + service);
       semLock.release();
+      return true;
     } else {
       System.out.println("(Provider) | error : no physician available");
       semLock.release();
+      return false;
     }
   }
 }
