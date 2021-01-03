@@ -1,24 +1,24 @@
 package m2.lagny.se;
 
 public class Patient {
-  private String name;
-  private boolean cured;
+	private final String name;
+	private boolean cured;
 
-  public Patient(String name) {
-    this.name = name;
-    this.cured = false;
-  }
+	public Patient(String name) {
+		this.name = name;
+		this.cured = false;
+	}
 
-  public boolean joinNewService(EmergencyCareService esc) throws InterruptedException {
-    return esc.addPatient(this);
-  }
+	public boolean joinEmergencyCareService(EmergencyCareService emergencyCareService) throws InterruptedException {
+		return emergencyCareService.addPatient(this);
+	}
 
-  public void setCured() {
-    this.cured = true;
-  }
+	public void cure() {
+		this.cured = true;
+	}
 
-  @Override
-  public String toString() {
-    return name;
-  }
+	@Override
+	public String toString() {
+		return name;
+	}
 }
