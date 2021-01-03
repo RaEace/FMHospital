@@ -28,6 +28,24 @@ public class EmergencyCareService {
     this.patientsInRoom = new ArrayList<Patient>();
   }
 
+  public void addRooms(int amount) {
+    for(int i = 0; i < amount; i++) {
+      this.semRooms.release();
+    }
+  }
+
+  public void addPhysicians(int amount) {
+    for(int i = 0; i < amount; i++) {
+      this.semPhysician.release();
+    }
+  }
+
+  public void addNurses(int amount) {
+    for(int i = 0; i < amount; i++) {
+      this.semNurses.release();
+    }
+  }
+
   public void PatientIsAccepted(Patient patient) {
     if (patients.contains(patient) && !patient.getCured()) {
       System.out.println("(" + this.serviceName + ") | " + patient + " entered in service and go to waiting-room");
