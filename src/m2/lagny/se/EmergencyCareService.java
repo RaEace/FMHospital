@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
 public class EmergencyCareService {
-	private String serviceName;
-	private Provider provider;
+	private final String serviceName;
+	private final Provider provider;
 
-	// We have here 3 semaphore to modelize our ressources
-	private Semaphore semPhysician;
-	private Semaphore semRooms;
-	private Semaphore semNurses;
+	// We have here 3 semaphore to model our resources
+	private final Semaphore semPhysician;
+	private final Semaphore semRooms;
+	private final Semaphore semNurses;
 
-	// differents states of the stacked patients through the hospital
-	private ArrayList<Patient> patients;
-	private ArrayList<Patient> patientsNoPaperInWR;
-	private ArrayList<Patient> patientsPaperInWR;
-	private ArrayList<Patient> patientsInRoom;
+	// different states of the stacked patients through the hospital
+	private final ArrayList<Patient> patients;
+	private final ArrayList<Patient> patientsNoPaperInWR;
+	private final ArrayList<Patient> patientsPaperInWR;
+	private final ArrayList<Patient> patientsInRoom;
 
 	public EmergencyCareService(String serviceName, Provider provider) throws InterruptedException {
 		this.serviceName = serviceName;
@@ -24,10 +24,10 @@ public class EmergencyCareService {
 		this.semPhysician = new Semaphore(0);
 		this.semRooms = new Semaphore(0);
 		this.semNurses = new Semaphore(0);
-		this.patients = new ArrayList<Patient>();
-		this.patientsNoPaperInWR = new ArrayList<Patient>();
-		this.patientsPaperInWR = new ArrayList<Patient>();
-		this.patientsInRoom = new ArrayList<Patient>();
+		this.patients = new ArrayList<>();
+		this.patientsNoPaperInWR = new ArrayList<>();
+		this.patientsPaperInWR = new ArrayList<>();
+		this.patientsInRoom = new ArrayList<>();
 		this.givePhysiciansToProvider();
 		this.givingRoomsToProvider();
 	}
@@ -50,7 +50,7 @@ public class EmergencyCareService {
 		}
 	}
 
-	// Methods to modelize the patient care in the hospital
+	// Methods to model the patient care in the hospital
 	public boolean addPatient(Patient patient) throws InterruptedException {
 		System.out.println("(" + this.serviceName + ") | " + patient + " arrived in this service");
 		this.patients.add(patient);
@@ -125,7 +125,7 @@ public class EmergencyCareService {
 		return true;
 	}
 
-	// Method where a patient will be examinate by a physician
+	// Method where a patient will be examine by a physician
 	public boolean physicianIsExaminatingPatient(Patient patient) throws InterruptedException {
 		System.out.println("(" + this.serviceName + ") | " + patient + " waiting for a physician");
 		while(!this.semPhysician.tryAcquire()) {
