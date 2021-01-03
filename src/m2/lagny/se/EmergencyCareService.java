@@ -104,23 +104,45 @@ public class EmergencyCareService {
     }
   }
 
-  public void PatientIsNowCuredAndCheckOut() {
-
+  public void PatientIsNowCuredAndCheckOut(Patient patient) {
+    System.out.println("(" + this.serviceName + ") | " + patient + " is checkign out and leaving");
+    this.patientsInRoom.remove(patient);
+    this.semRooms.release();
   }
 
-  private void askForARoomToProvider() {
-
+  private void GivingRoomsToProvider() throws InterruptedException {
+    Thread GivingRoomsToProvider = new Thread(() -> {
+      while(true) {
+        try {
+          Thread.sleep(5000);
+          if(patients.size() == 0 && patientsInRoom.size() == 0 && patientsPaperInWR.size() == 0 & patientsNoPaperInWR.size() == 0) {
+            semRooms.acquire();
+            System.out.println("(" + this.serviceName + ") | sending a room to provider");
+            provider.getARoom(serviceName);
+          }
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+    GivingRoomsToProvider.start();
   }
 
-  private void askForAPhysicianToProvider() {
-
-  }
-
-  private void sendARoomToProvider() {
-
-  }
-
-  private void sendAPhysicianToProvider() {
-
+  private void GivePhysiciansToProvider() throws InterruptedException{
+    Thread GivePhysiciansToProvider = new Thread(() -> {
+      while(true) {
+        try {
+          Thread.sleep(5000);
+          if(patients.size() == 0 && patientsInRoom.size() == 0 && patientsPaperInWR.size() == 0 & patientsNoPaperInWR.size() == 0) {
+            semPhysician.acquire();
+            System.out.println("(" + this.serviceName + ") | sending a physician to provider");
+            provider.getAPhysician(serviceName);
+          }
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        }
+      }
+    });
+    GivePhysiciansToProvider.start();
   }
 }
