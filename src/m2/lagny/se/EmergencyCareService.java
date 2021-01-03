@@ -46,7 +46,25 @@ public class EmergencyCareService {
     }
   }
 
-  public void PatientIsAccepted(Patient patient) {
+  public boolean addPatient(Patient patient) throws InterruptedException {
+    System.out.println("(" + this.serviceName + ") | " + patient + " arrived in this service");
+    this.patients.add(patient);
+    Thread.sleep(1000);
+    this.patientIsAccepted(patient);
+    Thread.sleep(1000);
+    this.patientIsFillingPaper(patient);
+    Thread.sleep(1000);
+    this.nurseIsProcessingPaper(patient);
+    Thread.sleep(1000);
+    this.patientIsInRoom(patient);
+    Thread.sleep(1000);
+    this.physicianIsExaminatingPatient(patient);
+    Thread.sleep(1000);
+    this.patientIsNowCuredAndCheckOut(patient);
+    return true;
+  }
+
+  public void patientIsAccepted(Patient patient) {
     if (patients.contains(patient) && !patient.getCured()) {
       System.out.println("(" + this.serviceName + ") | " + patient + " entered in service and go to waiting-room");
       this.patientsNoPaperInWR.add(patient);
@@ -55,13 +73,13 @@ public class EmergencyCareService {
     this.patients.remove(patient);
   }
 
-  public void PatientIsFillingPaper(Patient patient) {
+  public void patientIsFillingPaper(Patient patient) {
     if(patientsNoPaperInWR.contains(patient)) {
       System.out.println("(" + this.serviceName + ") | " + patient + " is filling paper");
     } else System.out.println("(" + this.serviceName + ") | " + patient + " an error as occured");
   }
 
-  public void NurseIsProcessingPaper(Patient patient) throws InterruptedException {
+  public void nurseIsProcessingPaper(Patient patient) throws InterruptedException {
     if(patientsNoPaperInWR.contains(patient)) {
       while(!this.semNurses.tryAcquire()) {
         System.out.println("(" + this.serviceName + ") | No nurse available.. please wait");
@@ -73,7 +91,7 @@ public class EmergencyCareService {
     }
   }
 
-  public void PatientIsInRoom(Patient patient) throws InterruptedException {
+  public void patientIsInRoom(Patient patient) throws InterruptedException {
     if(patientsPaperInWR.contains(patient)) {
       System.out.println("(" + this.serviceName + ") | " + patient + " waiting to join a room");
       while (!this.semRooms.tryAcquire()) {
@@ -97,7 +115,7 @@ public class EmergencyCareService {
     }
   }
 
-  public void PhysicianIsExaminatingPatient(Patient patient) throws InterruptedException {
+  public void physicianIsExaminatingPatient(Patient patient) throws InterruptedException {
     if(patientsInRoom.contains(patient)) {
       System.out.println("(" + this.serviceName + ") | " + patient + " waiting for a physician");
       while (!this.semPhysician.tryAcquire()) {
@@ -122,13 +140,13 @@ public class EmergencyCareService {
     }
   }
 
-  public void PatientIsNowCuredAndCheckOut(Patient patient) {
+  public void patientIsNowCuredAndCheckOut(Patient patient) {
     System.out.println("(" + this.serviceName + ") | " + patient + " is checkign out and leaving");
     this.patientsInRoom.remove(patient);
     this.semRooms.release();
   }
 
-  private void GivingRoomsToProvider() throws InterruptedException {
+  private void givingRoomsToProvider() throws InterruptedException {
     Thread GivingRoomsToProvider = new Thread(() -> {
       while(true) {
         try {
@@ -146,7 +164,7 @@ public class EmergencyCareService {
     GivingRoomsToProvider.start();
   }
 
-  private void GivePhysiciansToProvider() throws InterruptedException{
+  private void givePhysiciansToProvider() throws InterruptedException{
     Thread GivePhysiciansToProvider = new Thread(() -> {
       while(true) {
         try {

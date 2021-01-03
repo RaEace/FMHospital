@@ -4,9 +4,13 @@ public class Patient {
   private String name;
   private boolean cured;
 
-  public Patient(String name, boolean cured) {
+  public Patient(String name) {
     this.name = name;
-    this.cured = cured;
+    this.cured = false;
+  }
+
+  public boolean joinNewService(EmergencyCareService esc) throws InterruptedException {
+    return esc.addPatient(this);
   }
 
   public boolean getCured() {
