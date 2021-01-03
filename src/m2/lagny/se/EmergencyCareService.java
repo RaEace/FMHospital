@@ -16,5 +16,31 @@ public class EmergencyCareService {
   private ArrayList<Patient> patientSPaperInWR;
   private ArrayList<Patient> patientsInRoom;
 
+  public void PatientIsAccepted() {
 
+  }
+
+  public void PatientIsWaitingWithoutPaper() {
+
+  }
+
+  public void PatientIsFillingPaper() {
+
+  }
+
+  public void NurseIsProcessingPaper() {
+
+  }
+
+  public void PatientIsInRoom() {
+
+  }
+
+  public void PhysicianIsExaminatingPatient() {
+
+  }
+
+  public void PatientIsNowCuredAndCheckOut() {
+
+  }
 }
