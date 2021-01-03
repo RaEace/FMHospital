@@ -21,7 +21,7 @@ public class Main {
 
             // Initialization of the Surgery Service's
             EmergencyCareService surgery = new EmergencyCareService("Surgery", provider);
-            reanimation.addNurses(2);
+            surgery.addNurses(3);
 
             ArrayList<Patient> surgeryPatients = new ArrayList<Patient>();
             surgeryPatients.add(new Patient("Neymar"));
@@ -33,29 +33,25 @@ public class Main {
 
             reanimationPatients.forEach((patient -> {
                 patientsThreads.add(
-                        new Thread() {
-                            public void run() {
-                                try {
-                                    patient.joinNewService(reanimation);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+                        new Thread(() -> {
+                            try {
+                                patient.joinNewService(reanimation);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
-                        }
+                        })
                 );
             }));
 
             surgeryPatients.forEach((patient -> {
                 patientsThreads.add(
-                        new Thread() {
-                            public void run() {
-                                try {
-                                    patient.joinNewService(surgery);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+                        new Thread(() -> {
+                            try {
+                                patient.joinNewService(surgery);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
-                        }
+                        })
                 );
             }));
 

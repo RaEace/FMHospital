@@ -3,16 +3,19 @@ package m2.lagny.se;
 import java.util.concurrent.Semaphore;
 
 public class Provider {
+  // semaphore who represent the states of the ressource of the provider
   private Semaphore semRooms;
   private Semaphore semPhysicians;
   private Semaphore semLock;
 
+  // initialize ressource of the provider
   public Provider() {
     this.semRooms = new Semaphore(0);
     this.semPhysicians = new Semaphore(0);
     this.semLock = new Semaphore(1);
   }
 
+  // Method where the provider will receive a room from a service
   public void getARoom(String service) throws InterruptedException {
     this.semLock.acquire();
     this.semRooms.release();
@@ -20,9 +23,13 @@ public class Provider {
     this.semLock.release();
   }
 
-  public boolean givingARoom() throws InterruptedException {
+  // Method who will send a room to a service
+  // if possible => decrease semRooms by one and return true
+  // if none => return false
+  public boolean givingARoom(String service) throws InterruptedException {
     this.semLock.acquire();
     if(semRooms.tryAcquire()) {
+      System.out.println("(provider) give a room to service : " + service);
       semLock.release();
       return true;
     } else {
@@ -31,6 +38,7 @@ public class Provider {
     }
   }
 
+  // Method where the provider will receive a physician from a service
   public void getAPhysician(String service) throws InterruptedException {
     this.semLock.acquire();
     this.semPhysicians.release();
@@ -38,9 +46,13 @@ public class Provider {
     this.semLock.release();
   }
 
-  public boolean givingAPhysician() throws InterruptedException {
+  // Method who will send a physician to a service
+  // if possible => decrease semPhysicians by one and return true
+  // if none => return false
+  public boolean givingAPhysician(String service) throws InterruptedException {
     this.semLock.acquire();
-    if(semRooms.tryAcquire()) {
+    if(semPhysicians.tryAcquire()) {
+      System.out.println("(provider) give a physician to service : " + service);
       semLock.release();
       return true;
     } else {

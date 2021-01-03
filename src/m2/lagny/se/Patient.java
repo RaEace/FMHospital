@@ -13,10 +13,6 @@ public class Patient {
     return esc.addPatient(this);
   }
 
-  public boolean getCured() {
-    return this.cured;
-  }
-
   public void setCured() {
     this.cured = true;
   }
