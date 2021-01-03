@@ -20,14 +20,16 @@ public class Provider {
     this.semLock.release();
   }
 
-  public void givingARoom(String service) throws InterruptedException {
+  public boolean givingARoom(String service) throws InterruptedException {
     this.semLock.acquire();
     if(semRooms.tryAcquire()) {
       System.out.println("(Provider) | send a room to service : " + service);
       semLock.release();
+      return true;
     } else {
       System.out.println("(Provider) | error : no room available");
       semLock.release();
+      return false;
     }
   }
 
@@ -38,14 +40,12 @@ public class Provider {
     this.semLock.release();
   }
 
-  public boolean givingAPhysician(String service) throws InterruptedException {
+  public boolean givingAPhysician() throws InterruptedException {
     this.semLock.acquire();
     if(semRooms.tryAcquire()) {
-      System.out.println("(Provider) | send a physician to service : " + service);
       semLock.release();
       return true;
     } else {
-      System.out.println("(Provider) | error : no physician available");
       semLock.release();
       return false;
     }

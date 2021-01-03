@@ -55,26 +55,35 @@ public class EmergencyCareService {
     }
   }
 
-  // need provider
-  public void PatientIsInRoom(Patient patient) {
+  public void PatientIsInRoom(Patient patient) throws InterruptedException {
     if(patientsPaperInWR.contains(patient)) {
       System.out.println("(" + this.serviceName + ") | " + patient + " waiting to join a room");
       while(!this.semRooms.tryAcquire()) {
         Thread askForAPhysicianToProvider = new Thread(() -> {
           try {
-            if(provider.givingAPhysician(serviceName)) {
+            if(provider.givingAPhysician()) {
               semPhysician.release();
+              System.out.println("(Provider) | send a physician to service : " + serviceName);
             }
+            else System.out.println("(Provider) | error : no physician available");
           } catch (InterruptedException e) {
             e.printStackTrace();
           }
         });
+        askForAPhysicianToProvider.start();
+        Thread.sleep(1000);
       }
+      this.patientsPaperInWR.remove(patient);
+      this.patientsInRoom.add(patient);
+      System.out.println("(" + this.serviceName + ") | A nurse is here for " + patient + " papers");
+      this.semNurses.release();
     }
   }
 
-  public void PhysicianIsExaminatingPatient() {
+  public void PhysicianIsExaminatingPatient(Patient patient) {
+    if(patientsInRoom.contains(patients)) {
 
+    }
   }
 
   public void PatientIsNowCuredAndCheckOut() {
