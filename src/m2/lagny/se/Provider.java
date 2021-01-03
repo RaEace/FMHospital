@@ -3,12 +3,12 @@ package m2.lagny.se;
 import java.util.concurrent.Semaphore;
 
 public class Provider {
-	// semaphore who represent the states of the ressource of the provider
-	private Semaphore semRooms;
-	private Semaphore semPhysicians;
-	private Semaphore semLock;
+	// semaphore who represent the states of the resource of the provider
+	private final Semaphore semRooms;
+	private final Semaphore semPhysicians;
+	private final Semaphore semLock;
 
-	// initialize ressource of the provider
+	// initialize resource of the provider
 	public Provider() {
 		this.semRooms = new Semaphore(0);
 		this.semPhysicians = new Semaphore(0);
