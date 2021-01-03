@@ -59,6 +59,8 @@ public class Main {
                 );
             }));
 
+            patientsThreads.forEach((patientsThread) -> patientsThread.start());
+
         } catch (Exception e) {
             System.out.println(e);
         }

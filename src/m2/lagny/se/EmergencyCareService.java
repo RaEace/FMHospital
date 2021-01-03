@@ -150,7 +150,7 @@ public class EmergencyCareService {
     Thread GivingRoomsToProvider = new Thread(() -> {
       while(true) {
         try {
-          Thread.sleep(5000);
+          Thread.sleep(20000);
           if(patients.size() == 0 && patientsInRoom.size() == 0 && patientsPaperInWR.size() == 0 & patientsNoPaperInWR.size() == 0) {
             semRooms.acquire();
             System.out.println("(" + this.serviceName + ") | sending a room to provider");
@@ -168,7 +168,7 @@ public class EmergencyCareService {
     Thread GivePhysiciansToProvider = new Thread(() -> {
       while(true) {
         try {
-          Thread.sleep(5000);
+          Thread.sleep(2000);
           if(patients.size() == 0 && patientsInRoom.size() == 0 && patientsPaperInWR.size() == 0 & patientsNoPaperInWR.size() == 0) {
             semPhysician.acquire();
             System.out.println("(" + this.serviceName + ") | sending a physician to provider");
