@@ -143,7 +143,7 @@ public class EmergencyCareService {
       }
       System.out.println("(" + this.serviceName + ") | " + patient + " is examinating by a physician");
       Thread.sleep(3000);
-      patient.setCured();
+      patient.cure();
       this.semPhysician.release();
       return true;
   }

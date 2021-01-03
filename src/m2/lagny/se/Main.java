@@ -35,7 +35,7 @@ public class Main {
                 patientsThreads.add(
                         new Thread(() -> {
                             try {
-                                patient.joinNewService(reanimation);
+                                patient.joinEmergencyCareService(reanimation);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -47,7 +47,7 @@ public class Main {
                 patientsThreads.add(
                         new Thread(() -> {
                             try {
-                                patient.joinNewService(surgery);
+                                patient.joinEmergencyCareService(surgery);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
