@@ -28,8 +28,8 @@ public class EmergencyCareService {
 		this.patientsNoPaperInWR = new ArrayList<>();
 		this.patientsPaperInWR = new ArrayList<>();
 		this.patientsInRoom = new ArrayList<>();
-		this.givePhysiciansToProvider();
-		this.givingRoomsToProvider();
+		this.freePhysicianWhenNotNeeded();
+		this.freeRoomsWhenNotNeeded();
 	}
 
 	public void addRooms(int amount) {
@@ -55,23 +55,23 @@ public class EmergencyCareService {
 		System.out.println("(" + this.serviceName + ") | " + patient + " arrived in this service");
 		this.patients.add(patient);
 		Thread.sleep(1000);
-		this.patientIsAccepted(patient);
+		this.attemptToAcceptPatient(patient);
 		Thread.sleep(1000);
-		this.patientIsFillingPaper(patient);
+		this.makePatientFillPaperwork(patient);
 		Thread.sleep(1000);
-		this.nurseIsProcessingPaper(patient);
+		this.makeNurseProcessPatientPaperwork(patient);
 		Thread.sleep(1000);
-		this.patientIsInRoom(patient);
+		this.sendPatientInRoom(patient);
 		Thread.sleep(1000);
-		this.physicianIsExaminatingPatient(patient);
+		this.makePhysicianExaminePatient(patient);
 		Thread.sleep(1000);
-		this.patientIsNowCuredAndCheckOut(patient);
+		this.finishCuringAndCheckingOutPatient(patient);
 
 		return true;
 	}
 
 	// Method to determine if the patient is admitted during the check in, and if yes send to the waiting room
-	public boolean patientIsAccepted(Patient patient) {
+	public boolean attemptToAcceptPatient(Patient patient) {
 		if (patients.contains(patient)) {
 			System.out.println("(" + this.serviceName + ") | " + patient + " entered in service and go to waiting-room");
 			this.patientsNoPaperInWR.add(patient);
@@ -86,13 +86,13 @@ public class EmergencyCareService {
 	}
 
 	// Method where a patient will fill his paper
-	public boolean patientIsFillingPaper(Patient patient) {
-		System.out.println("(" + this.serviceName + ") | " + patient + " is filling paper");
+	public boolean makePatientFillPaperwork(Patient patient) {
+		System.out.println("(" + this.serviceName + ") | " + patient + " is filling paperwork");
 		return true;
 	}
 
 	// method where a nurse process papers of a patient
-	public boolean nurseIsProcessingPaper(Patient patient) throws InterruptedException {
+	public boolean makeNurseProcessPatientPaperwork(Patient patient) throws InterruptedException {
 		while(!this.semNurses.tryAcquire()) {
 			System.out.println("(" + this.serviceName + ") | No nurse available.. please wait");
 			Thread.sleep(1000); // 1s to ask for a nurse again
@@ -103,8 +103,8 @@ public class EmergencyCareService {
 		return true;
 	}
 
-	// Method where a client will be send in a room if there are some availables
-	public boolean patientIsInRoom(Patient patient) throws InterruptedException {
+	// Method where a patient will be send in a room if there are some available
+	public boolean sendPatientInRoom(Patient patient) throws InterruptedException {
 		System.out.println("(" + this.serviceName + ") | " + patient + " waiting to join a room");
 		while (!this.semRooms.tryAcquire()) {
 			Thread askForARoom = new Thread(() -> {
@@ -126,7 +126,7 @@ public class EmergencyCareService {
 	}
 
 	// Method where a patient will be examine by a physician
-	public boolean physicianIsExaminatingPatient(Patient patient) throws InterruptedException {
+	public boolean makePhysicianExaminePatient(Patient patient) throws InterruptedException {
 		System.out.println("(" + this.serviceName + ") | " + patient + " waiting for a physician");
 		while(!this.semPhysician.tryAcquire()) {
 			Thread askForAPhysician = new Thread(() -> {
@@ -149,7 +149,7 @@ public class EmergencyCareService {
 	}
 
 	// Method where a patient is now cured, and gonna checking out
-	public boolean patientIsNowCuredAndCheckOut(Patient patient) {
+	public boolean finishCuringAndCheckingOutPatient(Patient patient) {
 		System.out.println("(" + this.serviceName + ") | " + patient + " is checking out and leaving");
 		this.patientsInRoom.remove(patient);
 		this.semRooms.release();
@@ -157,7 +157,7 @@ public class EmergencyCareService {
 	}
 
 	// Method with a infinite loop to send room if a service doesn't need it
-	private void givingRoomsToProvider() throws InterruptedException {
+	private void freeRoomsWhenNotNeeded() {
 		Thread GivingRoomsToProvider = new Thread(() -> {
 			while(true) {
 				try {
@@ -177,7 +177,7 @@ public class EmergencyCareService {
 	}
 
 	// Method with a infinite loop to send physician if a service doesn't need it
-	private void givePhysiciansToProvider() throws InterruptedException{
+	private void freePhysicianWhenNotNeeded() {
 		Thread GivePhysiciansToProvider = new Thread(() -> {
 			while(true) {
 				try {
