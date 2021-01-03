@@ -109,7 +109,7 @@ public class EmergencyCareService {
 		while (!this.semRooms.tryAcquire()) {
 			Thread askForARoom = new Thread(() -> {
 				try {
-					if(provider.givingARoom(serviceName)) {
+					if(provider.giveRoomToServiceIfPossible(serviceName)) {
 						semRooms.release();
 					}
 				} catch (InterruptedException e) {
@@ -131,7 +131,7 @@ public class EmergencyCareService {
 		while(!this.semPhysician.tryAcquire()) {
 			Thread askForAPhysician = new Thread(() -> {
 				try {
-					if (provider.givingAPhysician(serviceName)) {
+					if (provider.givePhysicianToServiceIfPossible(serviceName)) {
 						semPhysician.release();
 					}
 				} catch (InterruptedException e) {
@@ -166,7 +166,7 @@ public class EmergencyCareService {
 						// Line up check if the hospital is empty
 						semRooms.acquire();
 						System.out.println("(" + this.serviceName + ") | sending a room to provider");
-						provider.getARoom(serviceName);
+						provider.getARoomForService(serviceName);
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
@@ -186,7 +186,7 @@ public class EmergencyCareService {
 						// Line up check if the hospital is empty
 						semPhysician.acquire();
 						System.out.println("(" + this.serviceName + ") | sending a physician to provider");
-						provider.getAPhysician(serviceName);
+						provider.getAPhysicianForService(serviceName);
 					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();

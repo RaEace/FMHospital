@@ -16,7 +16,7 @@ public class Provider {
 	}
 
 	// Method where the provider will receive a room from a service
-	public void getARoom(String service) throws InterruptedException {
+	public void getARoomForService(String service) throws InterruptedException {
 		this.semLock.acquire();
 		this.semRooms.release();
 		System.out.println("(Provider) | get a room from service : " + service);
@@ -26,7 +26,7 @@ public class Provider {
 	// Method who will send a room to a service
 	// if possible => decrease semRooms by one and return true
 	// if none => return false
-	public boolean givingARoom(String service) throws InterruptedException {
+	public boolean giveRoomToServiceIfPossible(String service) throws InterruptedException {
 		this.semLock.acquire();
 		if(semRooms.tryAcquire()) {
 			System.out.println("(provider) give a room to service : " + service);
@@ -39,7 +39,7 @@ public class Provider {
 	}
 
 	// Method where the provider will receive a physician from a service
-	public void getAPhysician(String service) throws InterruptedException {
+	public void getAPhysicianForService(String service) throws InterruptedException {
 		this.semLock.acquire();
 		this.semPhysicians.release();
 		System.out.println("(Provider) | get a physician from service : " + service);
@@ -49,7 +49,7 @@ public class Provider {
 	// Method who will send a physician to a service
 	// if possible => decrease semPhysicians by one and return true
 	// if none => return false
-	public boolean givingAPhysician(String service) throws InterruptedException {
+	public boolean givePhysicianToServiceIfPossible(String service) throws InterruptedException {
 		this.semLock.acquire();
 		if(semPhysicians.tryAcquire()) {
 			System.out.println("(provider) give a physician to service : " + service);
