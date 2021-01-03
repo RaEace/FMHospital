@@ -30,27 +30,32 @@ public class EmergencyCareService {
 
   public void PatientIsAccepted(Patient patient) {
     if (patients.contains(patient) && !patient.getCured()) {
-      System.out.println("(" + serviceName + ") | " + patient + " entered in service and go to waiting-room");
+      System.out.println("(" + this.serviceName + ") | " + patient + " entered in service and go to waiting-room");
       this.patientsNoPaperInWR.add(patient);
     }
-    else {
-      System.out.println("(" + serviceName + ") | " + patient + " canno't join the service");
-    }
+    else System.out.println("(" + this.serviceName + ") | " + patient + " canno't join the service");
     this.patients.remove(patient);
   }
 
-  public void PatientIsWaitingWithoutPaper() {
-
+  public void PatientIsFillingPaper(Patient patient) {
+    if(patientsNoPaperInWR.contains(patient)) {
+      System.out.println("(" + this.serviceName + ") | " + patient + " is filling paper");
+    } else System.out.println("(" + this.serviceName + ") | " + patient + " an error as occured");
   }
 
-  public void PatientIsFillingPaper() {
-
+  public void NurseIsProcessingPaper(Patient patient) throws InterruptedException {
+    if(patientsNoPaperInWR.contains(patient)) {
+      while(!this.semNurses.tryAcquire()) {
+        System.out.println("(" + this.serviceName + ") | No nurse available.. please wait");
+        Thread.sleep(1000);
+      }
+      System.out.println("(" + this.serviceName + ") | A nurse is here for " + patient + " papers");
+      this.patientsNoPaperInWR.remove(patient);
+      this.patientsPaperInWR.add(patient);
+    }
   }
 
-  public void NurseIsProcessingPaper() {
-
-  }
-
+  // need provider
   public void PatientIsInRoom() {
 
   }
@@ -60,6 +65,22 @@ public class EmergencyCareService {
   }
 
   public void PatientIsNowCuredAndCheckOut() {
+
+  }
+
+  private void askForARoomToProvider() {
+
+  }
+
+  private void askForAPhysicianToProvider() {
+
+  }
+
+  private void sendARoomToProvider() {
+
+  }
+
+  private void sendAPhysicianToProvider() {
 
   }
 }
